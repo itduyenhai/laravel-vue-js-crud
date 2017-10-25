@@ -65,7 +65,7 @@ export default {
     },
     methods: {
         getStudents : function(){
-            axios.get('/student')
+            axios.get('api/student')
             .then(response => this.students = response.data)
             .catch(error => console.log(error.response.data));
         },
@@ -82,7 +82,7 @@ export default {
             })
             .then(willDelete => {
                 if (willDelete) {
-                    axios.delete('/student/' + id)
+                    axios.delete('api/student/'+id)
                     .then(res =>{
                         if(res.status == 200 && res.data.status == "success"){
                             swal("Deleted!", res.data.message, "success");

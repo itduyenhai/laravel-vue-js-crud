@@ -16,10 +16,12 @@ class StudentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-        return Student::with('user')->get();
+        if ($request->ajax()) {
+            $data = Student::get();
+            return response()->json($data);
+        }
     }
 
     /**
@@ -42,21 +44,22 @@ class StudentController extends Controller
     public function store(Request $request)
     {
         //
-        $this->validate($request, [
+        if ($request->ajax()) {
+            $this->validate($request, [
+                'full_name' => 'required',
+                'father_name' => 'required',
+                'email' => 'required|email',
+                'address' => 'required',
+                'dob' => 'required'
+            ]);
 
-            'full_name' => 'required',
-            'father_name' => 'required',
-            'email' => 'required|email',
-            'address' => 'required',
-            'dob' => 'required'
-        ]);
+            Student::create($request->all());
 
-        Student::create($request->all());
-
-        return response()->json([
-            'status'  =>  'success',
-            'message' => 'Student successfully created.',
-        ]);
+            return response()->json([
+                'status'  =>  'success',
+                'message' => 'Student successfully created.',
+            ]);
+        }
     }
 
     /**
@@ -76,11 +79,13 @@ class StudentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
         //
-        return  Student::where('id',$id)->first();
-       
+        if ($request->ajax()) {
+            $data = Student::where('id', $id)->first();
+            return response()->json($data);
+        }
     }
 
     /**
@@ -92,7 +97,25 @@ class StudentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
+        
+        
+        if ($request->ajax()) {
+            $this->validate($request, [
+                'full_name' => 'required',
+                'father_name' => 'required',
+                'email' => 'required|email',
+                'address' => 'required',
+                'dob' => 'required'
+            ]);
+
+            Student::where('id',$id)->update($request->all());
+
+            return response()->json([
+                'status'  =>  'success',
+                'message' => 'Student successfully updated.',
+            ]);
+        }
     }
 
     /**

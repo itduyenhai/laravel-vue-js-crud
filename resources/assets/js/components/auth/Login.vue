@@ -11,7 +11,7 @@
                     <v-card-text>
                         <v-container>
                             <form @submit.prevent="submit">
-                                <v-alert color="error" icon="check_circle" dismissible v-model="alert"> Something went wrong.
+                                <v-alert :color="error" dismissible v-model="alert">{{ alert_msg }}
                                 </v-alert>
                                  <v-layout row>
                                     <v-flex xs12>
@@ -63,6 +63,7 @@
 export default {
     data(){
         return{
+        	alert_msg: '',
             error: '', 
             valid: true,
             alert: false,
@@ -79,18 +80,18 @@ export default {
                     if(res.status === 200){
                         let token = res.data.access_token;
                         this.$auth.setToken(token);
-                        localStorage.setItem('token',token);
                         this.$router.push('/')
                     }
                 })
                 .catch(error => {
+                	if(error.response.status === 401){
+                		this.alert_msg = 'Unauthorized login.'
+                	}else{
+                		this.alert_msg = 'Something went wrong.'
+                	}
                     this.alert = true;
-                    console.log(error)
                 });
         },
-        clear () {
-            
-        }
     }
 }
 </script>

@@ -12,7 +12,8 @@ let routes = [
 	},
 	{
 		path: '/',
-		component: require('./components/students/Index')
+		component: require('./components/students/Index'),
+		meta: { requiresAuth: true }
 	},
 	{
 		path: '/student/add',
@@ -21,7 +22,8 @@ let routes = [
 	},
 	{
 		path: '/student/edit/:student_id',
-		component: require('./components/students/Edit')
+		component: require('./components/students/Edit'),
+		meta: { requiresAuth: true }
 	}
 
 
@@ -34,21 +36,19 @@ let router = new VueRouter({
     linkActiveClass: 'active'
 })
 
-// router.beforeEach((to, from, next) => {
-//   if (to.matched.some(record => record.meta.requiresAuth)) {
-//     // this route requires auth, check if logged in
-//     // if not, redirect to login page.
-//     if (!auth.loggedIn()) {
-//       next({
-//         path: '/login',
-//         query: { redirect: to.fullPath }
-//       })
-//     } else {
-//       next()
-//     }
-//   } else {
-//     next() // make sure to always call next()!
-//   }
-// })
+router.beforeEach((to, from, next) => {
+	if (to.matched.some(record => record.meta.requiresAuth)) {
+		if (!Vue.auth.isAuthenticated()) {
+			next({
+				path: '/login',
+				query: { redirect: to.fullPath }
+			})
+		} else {
+			next()
+		}
+	} else {
+		next()
+	}
+})
 
 export default router;

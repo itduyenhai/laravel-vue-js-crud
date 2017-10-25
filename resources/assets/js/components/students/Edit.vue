@@ -10,7 +10,7 @@
                     <v-card-text>
                         <v-container>
                             <form @submit.prevent="submit">
-                                <v-alert color="success" icon="check_circle" dismissible v-model="sucess_alert"> Successfully added.
+                                <v-alert color="success" icon="check_circle" dismissible v-model="sucess_alert">Student successfully updated.
                                 </v-alert>
                                 <v-alert color="danger" icon="check_circle" dismissible v-model="danger_alert"> Something went wrong.
                                 </v-alert>
@@ -103,11 +103,10 @@ export default {
         submit () {
             this.loading = true;
             this.$validator.validateAll();
-            axios.post('/api/student/add',this.form).then(res =>{
+            axios.put('/api/student/'+this.student_id,this.form).then(res =>{
                 if(res.status == 200 && res.data.status === "success"){
                     this.sucess_alert = true;
                     this.loading = false;
-                    this.clear();
                 }
             })
             .catch( err => {
@@ -122,7 +121,7 @@ export default {
         },
         getStudent(){
             let vm = this;
-            axios.get('/api/student/edit/'+this.student_id)
+            axios.get('/api/student/'+this.student_id+'/edit')
             .then(res => {
                 Vue.set(vm.$data, 'form', res.data)
 
