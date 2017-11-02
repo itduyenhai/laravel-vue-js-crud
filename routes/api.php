@@ -18,5 +18,7 @@ Route::group(['middleware' => ['api']], function () {
 	
     Route::post('authenticate', 'ApiAuthController@authenticate');
 	Route::post('user', 'ApiAuthController@getAuthenticatedUser');
+    Route::resource('student', 'StudentController');
+    Route::post('register','Auth\RegisterController@register');
     
 });

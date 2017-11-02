@@ -69811,10 +69811,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            alert: false,
+            alert_color: '',
+            alert_msg: '',
+            alert_icon: '',
             loading: false,
             name: '',
             email: '',
@@ -69828,18 +69834,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             this.loading = true;
             this.$validator.validateAll();
-            axios.post('register', {
+            axios.post('api/register', {
                 name: this.name,
                 email: this.email,
                 password: this.password,
                 password_confirmation: this.confirmed
             }).then(function (res) {
                 if (res.status == 200 && res.data.status == "success") {
-                    _this.$router.push('/');
+                    _this.alert = true;
+                    _this.alert_color = "success";
+                    _this.alert_icon = 'check_circle';
+                    _this.alert_msg = "Registered successfully.";
+                    _this.loading = false;
+                    _this.clear();
                 }
             }).catch(function (err) {
                 if (err.response) {
                     if (err.response.status == 422) {
+                        _this.alert = true;
+                        _this.alert_color = "error";
+                        _this.alert_icon = 'check_circle';
+                        _this.alert_msg = "Something went wrong.";
                         _this.loading = false;
                     }
                 }
@@ -69899,6 +69914,31 @@ var render = function() {
                             }
                           },
                           [
+                            _c(
+                              "v-alert",
+                              {
+                                attrs: {
+                                  color: _vm.alert_color,
+                                  icon: _vm.alert_icon,
+                                  dismissible: ""
+                                },
+                                model: {
+                                  value: _vm.alert,
+                                  callback: function($$v) {
+                                    _vm.alert = $$v
+                                  },
+                                  expression: "alert"
+                                }
+                              },
+                              [
+                                _vm._v(
+                                  " " +
+                                    _vm._s(_vm.alert_msg) +
+                                    "\n                            "
+                                )
+                              ]
+                            ),
+                            _vm._v(" "),
                             _c(
                               "v-layout",
                               { attrs: { row: "" } },
@@ -70632,14 +70672,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            sucess_alert: false,
-            danger_alert: false,
+            alert: false,
+            alert_color: '',
+            alert_msg: '',
+            alert_icon: '',
             menu: false,
             loading: false,
             form: {
@@ -70658,9 +70698,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             this.loading = true;
             this.$validator.validateAll();
-            axios.post('/api/student/add', this.form).then(function (res) {
+            axios.post('/api/student', this.form).then(function (res) {
                 if (res.status == 200 && res.data.status === "success") {
-                    _this.sucess_alert = true;
+                    _this.alert = true;
+                    _this.alert_color = "success";
+                    _this.alert_icon = 'check_circle';
+                    _this.alert_msg = res.data.message;
                     _this.loading = false;
                     _this.clear();
                 }
@@ -70668,7 +70711,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 if (err.response) {
                     if (err.response.status == 422) {
                         console.log(err.response.data);
-                        _this.danger_alert = true;
+                        _this.alert = true;
+                        _this.alert_color = "error";
+                        _this.alert_msg = 'something went wrong. please try again';
                         _this.loading = false;
                     }
                 }
@@ -70743,44 +70788,23 @@ var render = function() {
                               "v-alert",
                               {
                                 attrs: {
-                                  color: "success",
-                                  icon: "check_circle",
+                                  color: _vm.alert_color,
+                                  icon: _vm.alert_icon,
                                   dismissible: ""
                                 },
                                 model: {
-                                  value: _vm.sucess_alert,
+                                  value: _vm.alert,
                                   callback: function($$v) {
-                                    _vm.sucess_alert = $$v
+                                    _vm.alert = $$v
                                   },
-                                  expression: "sucess_alert"
+                                  expression: "alert"
                                 }
                               },
                               [
                                 _vm._v(
-                                  " Successfully added.\n                            "
-                                )
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "v-alert",
-                              {
-                                attrs: {
-                                  color: "danger",
-                                  icon: "check_circle",
-                                  dismissible: ""
-                                },
-                                model: {
-                                  value: _vm.danger_alert,
-                                  callback: function($$v) {
-                                    _vm.danger_alert = $$v
-                                  },
-                                  expression: "danger_alert"
-                                }
-                              },
-                              [
-                                _vm._v(
-                                  " Something went wrong.\n                            "
+                                  " " +
+                                    _vm._s(_vm.alert_msg) +
+                                    "\n                                "
                                 )
                               ]
                             ),

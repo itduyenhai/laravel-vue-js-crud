@@ -45,6 +45,8 @@
                     <v-card-text>
                         <v-container>
                             <form @submit.prevent="register">
+                                <v-alert :color="alert_color" :icon="alert_icon" dismissible v-model="alert"> {{ alert_msg }}
+                                </v-alert>
                                 <v-layout row>
                                     <v-flex xs12>
                                         <v-toolbar-title class="display-1" style="margin:0px;">Registration</v-toolbar-title>
@@ -94,6 +96,10 @@
 <script>
 export default {
     data: () => ({
+        alert: false,
+        alert_color: '',
+        alert_msg: '',
+        alert_icon:'',
         loading: false,
         name: '',
         email: '',
@@ -104,7 +110,7 @@ export default {
         register () {
             this.loading = true;
             this.$validator.validateAll()
-            axios.post('register', {
+            axios.post('api/register', {
                 name: this.name,
                 email: this.email,
                 password: this.password,
@@ -112,12 +118,21 @@ export default {
             }
             ).then(res =>{
                 if(res.status == 200 && res.data.status == "success"){
-                    this.$router.push('/')
+                    this.alert = true;
+                    this.alert_color = "success";
+                    this.alert_icon = 'check_circle';
+                    this.alert_msg = "Registered successfully.";
+                    this.loading = false;
+                    this.clear();
                 }
             })
             .catch( err => {
                 if (err.response) {
                     if(err.response.status == 422){
+                        this.alert = true;
+                        this.alert_color = "error";
+                        this.alert_icon = 'check_circle';
+                        this.alert_msg = "Something went wrong.";
                         this.loading = false;
                     }
                 }

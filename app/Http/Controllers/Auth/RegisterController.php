@@ -53,7 +53,7 @@ class RegisterController extends Controller
 
         event(new Registered($user = $this->create($request->all())));
 
-        return response()->json(['status' => 'success','user'=>$user], 200);
+        return response()->json(['status' => 'success'], 200);
         // return $this->registered($request, $user);
     }
 

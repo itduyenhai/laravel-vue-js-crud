@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Student;
+use App\Http\Controllers\ApiAuthController;
 
 class StudentController extends Controller
 {
@@ -18,10 +19,10 @@ class StudentController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->ajax()) {
-            $data = Student::get();
-            return response()->json($data);
-        }
+        $userId = (new ApiAuthController)->getAuthenticatedUser()->id;
+
+        $data = Student::where('user_id', $userId)->get();
+        return response()->json($data);
     }
 
     /**
@@ -97,9 +98,6 @@ class StudentController extends Controller
      */
     public function update(Request $request, $id)
     {
-
-        
-        
         if ($request->ajax()) {
             $this->validate($request, [
                 'full_name' => 'required',
@@ -109,7 +107,7 @@ class StudentController extends Controller
                 'dob' => 'required'
             ]);
 
-            Student::where('id',$id)->update($request->all());
+            Student::where('id', $id)->update($request->all());
 
             return response()->json([
                 'status'  =>  'success',

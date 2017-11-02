@@ -27,22 +27,3 @@ Route::get('/student/edit/{id}', function () {
     return view('home');
 });
 
-
-// Route::auth();
-
-Route::get('/about', 'HomeController@index')->name('home');
-
-Route::group(['prefix' => 'api'], function() {
-    
-    Route::post('register','Auth\RegisterController@register');
-
-    Route::resource('student', 'StudentController');
-    
-    // Route::post('/student/add','StudentController@store');
-    // Route::get('/student/edit/{id}','StudentController@edit');
-    // Route::post('/student/update/{id}','StudentController@update');
-
-
-
-});
-

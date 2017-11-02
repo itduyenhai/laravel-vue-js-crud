@@ -7,14 +7,12 @@
         </v-layout>
         <v-layout row>
             <v-flex xs12 sm6 offset-sm3>
-                                        <v-btn type="button" style="margin-left:0px;" to="/" class="primary">Back</v-btn>
+                <v-btn type="button" style="margin-left:0px;" to="/" class="primary">Back</v-btn>
                 <v-card>
                     <v-card-text>
                         <v-container>
                             <form @submit.prevent="submit">
-                                <v-alert color="success" icon="check_circle" dismissible v-model="sucess_alert"> Successfully added.
-                                </v-alert>
-                                 <v-alert color="danger" icon="check_circle" dismissible v-model="danger_alert"> Something went wrong.
+                                <v-alert :color="alert_color" :icon="alert_icon" dismissible v-model="alert"> {{ alert_msg }}
                                 </v-alert>
                                 <v-layout row>
                                     <v-flex xs12>
@@ -27,7 +25,7 @@
                                         </v-text-field>
                                     </v-flex>
                                 </v-layout>
-                                 <v-layout row>
+                                <v-layout row>
                                     <v-flex xs12>
                                         <v-text-field label="Father Name" name="father_name" id="father_name" v-model="form.father_name" v-validate="'required'"  :error-messages="errors.collect('father_name')" required>
                                         </v-text-field>
@@ -39,7 +37,7 @@
                                         </v-text-field>
                                     </v-flex>
                                 </v-layout>
-                               <v-layout row>
+                                <v-layout row>
                                     <v-flex xs12>
                                         <v-text-field label="Address" name="address" id="address" v-model="form.address" v-validate="'required'"  :error-messages="errors.collect('address')" required>
                                         </v-text-field>
@@ -63,28 +61,30 @@
                                     </v-menu>
                                 </v-flex>
                             </v-layout>
-                                <v-layout row>
-                                    <v-flex xs12>
-                                        <v-btn type="submit" style="margin:0px;" color="primary" :loading="loading" @click.native="loader = 'loading'" :disabled="loading">
-                                            Submit
-                                        </v-btn>
-                                        <v-btn @click="clear">clear</v-btn>
-                                    </v-flex>
-                                </v-layout>
-                            </form>
-                        </v-container>
-                    </v-card-text>
-                </v-card>
-            </v-flex>
-        </v-layout>
-    </v-container>
+                            <v-layout row>
+                                <v-flex xs12>
+                                    <v-btn type="submit" style="margin:0px;" color="primary" :loading="loading" @click.native="loader = 'loading'" :disabled="loading">
+                                        Submit
+                                    </v-btn>
+                                    <v-btn @click="clear">clear</v-btn>
+                                </v-flex>
+                            </v-layout>
+                        </form>
+                    </v-container>
+                </v-card-text>
+            </v-card>
+        </v-flex>
+    </v-layout>
+</v-container>
 </template>
 <script>
 export default {
     data() {
         return {
-            sucess_alert: false,
-            danger_alert: false,
+            alert: false,
+            alert_color: '',
+            alert_msg: '',
+            alert_icon:'',
             menu: false,
             loading: false,
             form:{
@@ -99,12 +99,15 @@ export default {
     },
     methods: {
         submit () {
-           
+
             this.loading = true;
             this.$validator.validateAll();
-            axios.post('/api/student/add',this.form).then(res =>{
+            axios.post('/api/student',this.form).then(res =>{
                 if(res.status == 200 && res.data.status === "success"){
-                    this.sucess_alert = true;
+                    this.alert = true;
+                    this.alert_color = "success";
+                    this.alert_icon = 'check_circle';
+                    this.alert_msg = res.data.message;
                     this.loading = false;
                     this.clear();
                 }
@@ -113,7 +116,9 @@ export default {
                 if (err.response) {
                     if(err.response.status == 422){
                         console.log(err.response.data);
-                        this.danger_alert = true;
+                        this.alert = true;
+                        this.alert_color = "error";
+                        this.alert_msg = 'something went wrong. please try again';
                         this.loading = false;
                     }
                 }
