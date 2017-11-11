@@ -42,10 +42,10 @@
                                 </v-layout>
                                 <v-layout row>
                                     <v-flex xs12>
-                                        <v-checkbox
+                                        <!-- <v-checkbox
                                         label="Do you agree?"
                                         required
-                                        ></v-checkbox>
+                                        ></v-checkbox> -->
                                         <v-btn type="submit" class="primary">
                                             Login
                                         </v-btn>
